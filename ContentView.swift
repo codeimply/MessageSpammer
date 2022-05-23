@@ -29,11 +29,13 @@ struct ContentView: View {
             TextField("Enter number +44", text: $number)
                 .textFieldStyle(.roundedBorder)
                 .padding(.init(top: 10, leading: 20, bottom: 20, trailing: 20))
-                .focused($numberIsFocused)
+                .focused($numberIsFocused) // tracks use of textfield
+                .keyboardType(.decimalPad)
             
             Button {
                 spamMessage()
-                
+                numberIsFocused = false // dimsses keyboard once submitted
+               
             } label: {
                 Text("spam")
                     .padding(.init(top: 5, leading: 20, bottom: 5, trailing: 20))
@@ -45,6 +47,11 @@ struct ContentView: View {
             }
         }
         .frame(alignment: .center)
+        .onTapGesture {
+            hideKeyboardOnTap() // hides keyboard on tap gesture
+        }
+       
+        
     }
     
     func spamMessage () {
@@ -54,8 +61,17 @@ struct ContentView: View {
         UIApplication.shared.open(URL.init(string: strURL)!, options: [:], completionHandler: nil)
     }
     
+  
+    
 }
 
+// Enables to dismiss keyboard onn VStack by tap gesture
+extension View {
+    func hideKeyboardOnTap(){
+        let resign = #selector(UIResponder.resignFirstResponder)
+        UIApplication.shared.sendAction(resign, to: nil, from: nil, for: nil)
+    }
+}
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
